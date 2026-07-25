@@ -1,0 +1,126 @@
+// Prisma Schema — Nar-ı Has Restaurant
+// Veritabanı: PostgreSQL (Neon)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Kullanıcılar ────────────────────────────────────────────────────────────
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String   @map("password_hash")
+  role         Role     @default(CUSTOMER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  addresses Address[]
+  orders    Order[]
+
+  @@map("users")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+// ─── Adresler ────────────────────────────────────────────────────────────────
+model Address {
+  id          String  @id @default(cuid())
+  userId      String  @map("user_id")
+  title       String  // "Ev", "İş" gibi
+  addressText String  @map("address_text")
+  district    String?
+  city        String  @default("İstanbul")
+  note        String? // Kapı kodu, kat gibi ek notlar
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+// ─── Kategoriler ─────────────────────────────────────────────────────────────
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  emoji    String    @default("🍽️")
+  order    Int       @default(0)
+  products Product[]
+
+  @@map("categories")
+}
+
+// ─── Ürünler ─────────────────────────────────────────────────────────────────
+model Product {
+  id          String  @id @default(cuid())
+  categoryId  String  @map("category_id")
+  name        String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  imageUrl    String? @map("image_url")
+  isAvailable Boolean @default(true) @map("is_available")
+  isFeatured  Boolean @default(false) @map("is_featured")
+  order       Int     @default(0)
+
+  category   Category    @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+// ─── Siparişler ──────────────────────────────────────────────────────────────
+model Order {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  addressId     String?       @map("address_id")
+  addressText   String?       @map("address_text") // Snapshot — adres silinse bile saklanır
+  status        OrderStatus   @default(PENDING)
+  paymentMethod PaymentMethod @map("payment_method")
+  totalPrice    Decimal       @db.Decimal(10, 2) @map("total_price")
+  note          String?
+  estimatedTime Int?          @map("estimated_time") // Dakika cinsinden tahmini süre
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id])
+  address    Address?    @relation(fields: [addressId], references: [id])
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING     // Sipariş Alındı
+  PREPARING   // Hazırlanıyor
+  ON_THE_WAY  // Yola Çıktı
+  DELIVERED   // Teslim Edildi
+  CANCELLED   // İptal Edildi
+}
+
+enum PaymentMethod {
+  CASH        // Kapıda Nakit
+  CARD        // Kapıda Kart
+}
+
+// ─── Sipariş Kalemleri ───────────────────────────────────────────────────────
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String  @map("order_id")
+  productId String  @map("product_id")
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2) @map("unit_price") // Snapshot fiyat
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
