@@ -50,6 +50,11 @@ function LoginForm() {
               <Input id="password" label="Şifre" type={showPass ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Şifrenizi girin" required icon={<Lock className="h-4 w-4" />} />
               <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-9 text-gray-400 hover:text-gray-600">{showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
             </div>
+            <div className="text-right">
+              <Link href="/auth/forgot-password" className="text-xs text-gray-400 hover:text-brand-600 transition-colors">
+                Şifremi unuttum
+              </Link>
+            </div>
             <Button type="submit" className="w-full" size="lg" loading={loading}>Giriş Yap</Button>
           </form>
           <p className="text-center text-sm text-gray-500 mt-6">
