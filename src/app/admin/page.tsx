@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { TrendingUp, ShoppingBag, Users, Clock } from "lucide-react";
 import { DashboardChart } from "./DashboardChart";
+import { RecentOrdersList } from "./RecentOrdersList";
 
 export const metadata: Metadata = { title: "Dashboard | Admin" };
 
@@ -35,22 +36,30 @@ export default async function AdminDashboard() {
     });
   }
 
-  // Recent orders
+  // Recent orders - full details
   const recentOrders = await prisma.order.findMany({
-    take: 5, orderBy: { createdAt: "desc" },
-    include: { user: { select: { name: true } }, orderItems: { select: { quantity: true } } },
+    take: 20,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: { select: { name: true, email: true, phone: true } },
+      orderItems: {
+        include: { product: { select: { name: true, price: true } } }
+      },
+    },
   });
 
   const stats = [
-    { label: "Bugunun Siparisleri", value: todayOrders, sub: `Toplam: ${totalOrders}`, icon: ShoppingBag, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Bugunun Cirosu", value: formatPrice(Number(todayRevenue._sum.totalPrice ?? 0)), sub: `Toplam: ${formatPrice(Number(totalRevenue._sum.totalPrice ?? 0))}`, icon: TrendingUp, color: "text-green-600", bg: "bg-green-50" },
-    { label: "Musteriler", value: totalCustomers, sub: "Kayitli musteri", icon: Users, color: "text-purple-600", bg: "bg-purple-50" },
-    { label: "Bekleyen Siparisler", value: pendingOrders, sub: "Onay bekliyor", icon: Clock, color: "text-orange-600", bg: "bg-orange-50" },
+    { label: "Bugünün Siparişleri", value: todayOrders, sub: `Toplam: ${totalOrders}`, icon: ShoppingBag, color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Bugünün Cirosu", value: formatPrice(Number(todayRevenue._sum.totalPrice ?? 0)), sub: `Toplam: ${formatPrice(Number(totalRevenue._sum.totalPrice ?? 0))}`, icon: TrendingUp, color: "text-green-600", bg: "bg-green-50" },
+    { label: "Müşteriler", value: totalCustomers, sub: "Kayıtlı müşteri", icon: Users, color: "text-purple-600", bg: "bg-purple-50" },
+    { label: "Bekleyen Siparişler", value: pendingOrders, sub: "Onay bekliyor", icon: Clock, color: "text-orange-600", bg: "bg-orange-50" },
   ];
 
   return (
     <div>
       <h1 className="font-display text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {stats.map((s) => (
           <div key={s.label} className="bg-white rounded-2xl shadow-card p-6">
@@ -63,7 +72,18 @@ export default async function AdminDashboard() {
           </div>
         ))}
       </div>
+
+      {/* Chart */}
       <DashboardChart data={dailyStats} />
+
+      {/* Recent Orders */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl font-bold text-gray-900">Son Siparişler</h2>
+          <a href="/admin/orders" className="text-sm text-brand-600 hover:underline font-medium">Tümünü gör →</a>
+        </div>
+        <RecentOrdersList orders={recentOrders} />
+      </div>
     </div>
   );
 }
