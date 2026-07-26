@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Prisma'nın build sırasında server-side'da düzgün çalışması için (Next.js 14)
+  experimental: {
+    serverComponentsExternalPackages: ["@prisma/client", "bcryptjs"],
+  },
   images: {
     remotePatterns: [
       {
