@@ -65,18 +65,7 @@ export function ComingSoonOverlay() {
           <div className="h-px w-24" style={{ background: 'linear-gradient(90deg, #c59e67, transparent)' }} />
         </div>
 
-        {/* Subtitle */}
-        <p
-          className="text-base md:text-lg leading-relaxed max-w-lg"
-          style={{
-            color: 'rgba(245,237,224,0.5)',
-            letterSpacing: '0.05em',
-            animation: 'fadeUp 1s ease 0.45s both',
-          }}
-        >
-          Geleneksel Anadolu mutfağının en seçkin tatlarını<br />
-          sizlerle buluşturmak için hazırlanıyoruz.
-        </p>
+
 
       </div>
 
