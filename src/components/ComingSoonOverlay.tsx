@@ -4,39 +4,88 @@ import { usePathname } from "next/navigation";
 
 export function ComingSoonOverlay() {
   const pathname = usePathname();
-  
+
   // Eğer kullanıcı /admin veya /auth (giriş) sayfalarındaysa bu ekranı GÖSTERME
   const isBypassed = pathname?.startsWith('/admin') || pathname?.startsWith('/auth');
-  
+
   if (isBypassed) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-50 overflow-hidden">
-      {/* Animated background effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 -left-10 w-96 h-96 bg-brand-300/40 rounded-full mix-blend-multiply blur-[100px] animate-blob" />
-        <div className="absolute top-0 -right-10 w-[500px] h-[500px] bg-brand-200/50 rounded-full mix-blend-multiply blur-[120px] animate-blob" style={{ animationDelay: '2s' }} />
-        <div className="absolute -bottom-10 left-1/3 w-80 h-80 bg-pomegranate-300/40 rounded-full mix-blend-multiply blur-[100px] animate-blob" style={{ animationDelay: '4s' }} />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 25px 25px, black 2px, transparent 0)", backgroundSize: "50px 50px" }} />
-      </div>
-      
-      <div className="relative z-10 flex flex-col items-center text-center p-8">
-        <div className="mb-10 flex flex-col items-center gap-5 bg-white/70 backdrop-blur-xl px-12 py-10 rounded-[3rem] border border-white shadow-card animate-float">
-          <Image src="/icon.png" alt="Icon" width={100} height={100} className="object-contain animate-spin-slow" />
-          <Image src="/logo.png" alt="Nar-ı Has" width={240} height={70} className="object-contain" />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: '#0f0a06' }}>
+
+      {/* Subtle background radial glow */}
+      <div className="absolute inset-0" style={{
+        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(160,90,40,0.12) 0%, transparent 70%),
+                          radial-gradient(ellipse 60% 40% at 80% 100%, rgba(120,60,20,0.08) 0%, transparent 60%)`,
+      }} />
+
+      {/* Thin horizontal gold lines - top & bottom */}
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(197,158,103,0.4), transparent)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(197,158,103,0.4), transparent)' }} />
+
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center text-center px-8 max-w-2xl mx-auto">
+
+        {/* Logo */}
+        <div className="mb-12" style={{ animation: 'fadeUp 1s ease both' }}>
+          <Image
+            src="/logo.png"
+            alt="Nar-ı Has"
+            width={200}
+            height={60}
+            className="object-contain"
+            style={{ filter: 'brightness(0) invert(1) sepia(1) saturate(0.3)' }}
+          />
         </div>
-        <h1 className="font-display text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight drop-shadow-sm animate-slide-up" style={{ animationFillMode: 'both' }}>
-          Çok Yakında...
+
+        {/* Gold divider */}
+        <div className="flex items-center gap-4 mb-10" style={{ animation: 'fadeUp 1s ease 0.15s both' }}>
+          <div className="h-px w-16" style={{ background: 'linear-gradient(90deg, transparent, #c59e67)' }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#c59e67' }} />
+          <div className="h-px w-16" style={{ background: 'linear-gradient(90deg, #c59e67, transparent)' }} />
+        </div>
+
+        {/* Heading */}
+        <h1
+          className="font-display text-5xl md:text-7xl font-bold mb-6"
+          style={{
+            color: '#f5ede0',
+            letterSpacing: '0.15em',
+            animation: 'fadeUp 1s ease 0.25s both',
+          }}
+        >
+          Çok Yakında
         </h1>
-        <p className="text-gray-600 text-lg md:text-xl max-w-xl leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-          Geleneksel Anadolu mutfağının en seçkin tatlarını modern bir dokunuşla sizlerle buluşturmak için heyecanla hazırlanıyoruz. Bizi takipte kalın!
-        </p>
-        <div className="mt-12 flex gap-4 animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-          <div className="w-3 h-3 rounded-full bg-brand-600 animate-ping" />
-          <div className="w-3 h-3 rounded-full bg-brand-600 animate-ping" style={{ animationDelay: '0.2s' }} />
-          <div className="w-3 h-3 rounded-full bg-brand-600 animate-ping" style={{ animationDelay: '0.4s' }} />
+
+        {/* Gold divider */}
+        <div className="flex items-center gap-4 mb-10" style={{ animation: 'fadeUp 1s ease 0.35s both' }}>
+          <div className="h-px w-24" style={{ background: 'linear-gradient(90deg, transparent, #c59e67)' }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#c59e67' }} />
+          <div className="h-px w-24" style={{ background: 'linear-gradient(90deg, #c59e67, transparent)' }} />
         </div>
+
+        {/* Subtitle */}
+        <p
+          className="text-base md:text-lg leading-relaxed max-w-lg"
+          style={{
+            color: 'rgba(245,237,224,0.5)',
+            letterSpacing: '0.05em',
+            animation: 'fadeUp 1s ease 0.45s both',
+          }}
+        >
+          Geleneksel Anadolu mutfağının en seçkin tatlarını<br />
+          sizlerle buluşturmak için hazırlanıyoruz.
+        </p>
+
       </div>
+
+      <style jsx>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
