@@ -1,18 +1,10 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: Number(process.env.EMAIL_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
-  await transporter.sendMail({
-    from: `"Nar-ı Has" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: "Nar-ı Has <onboarding@resend.dev>",
     to,
     subject: "Şifre Sıfırlama — Nar-ı Has",
     html: `
@@ -23,14 +15,12 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0eb;padding:40px 0;">
           <tr><td align="center">
             <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-              <!-- Header -->
               <tr>
                 <td style="background:#1a0a00;padding:32px 40px;text-align:center;">
                   <h1 style="color:#c59e67;font-size:28px;margin:0;letter-spacing:0.1em;">Nar-ı Has</h1>
                   <p style="color:rgba(197,158,103,0.6);font-size:12px;margin:6px 0 0;letter-spacing:0.15em;">GELENEKSEL ANADOLU MUTFAĞI</p>
                 </td>
               </tr>
-              <!-- Body -->
               <tr>
                 <td style="padding:40px 40px 32px;">
                   <p style="color:#374151;font-size:16px;margin:0 0 8px;">Merhaba, <strong>${name}</strong></p>
@@ -47,7 +37,6 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
                   </p>
                 </td>
               </tr>
-              <!-- Footer -->
               <tr>
                 <td style="background:#f9f5f0;padding:20px 40px;border-top:1px solid #e5e7eb;text-align:center;">
                   <p style="color:#9ca3af;font-size:12px;margin:0;">© 2025 Nar-ı Has — Tüm hakları saklıdır.</p>
