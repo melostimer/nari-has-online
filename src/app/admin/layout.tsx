@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChefHat, LayoutDashboard, Package, ShoppingBag, Users, LogOut, ListOrdered } from "lucide-react";
+import { ChefHat, LayoutDashboard, Package, ShoppingBag, Users, LogOut, ListOrdered, Monitor } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -13,6 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/satis", label: "Satış Ekranı", icon: Monitor },
     { href: "/admin/orders", label: "Siparişler", icon: ShoppingBag },
     { href: "/admin/categories", label: "Kategoriler", icon: ListOrdered },
     { href: "/admin/products", label: "Ürünler", icon: Package },
