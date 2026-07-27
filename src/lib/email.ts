@@ -1,10 +1,18 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  port: Number(process.env.EMAIL_PORT) || 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
-  await resend.emails.send({
-    from: "Nar-ı Has <onboarding@resend.dev>",
+  await transporter.sendMail({
+    from: `"Nar-ı Has" <${process.env.EMAIL_USER}>`,
     to,
     subject: "Şifre Sıfırlama — Nar-ı Has",
     html: `
