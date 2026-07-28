@@ -1,14 +1,22 @@
 "use client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export function ComingSoonOverlay() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
-  // Eğer kullanıcı /admin veya /auth (giriş) sayfalarındaysa bu ekranı GÖSTERME
+  // /admin veya /auth sayfalarında gösterme
   const isBypassed = pathname?.startsWith('/admin') || pathname?.startsWith('/auth');
 
-  if (isBypassed) return null;
+  // Giriş yapmış kullanıcılara gösterme
+  const isLoggedIn = status === "authenticated" && !!session;
+
+  if (isBypassed || isLoggedIn) return null;
+
+  // Oturum yükleniyorsa bekle (flash önleme)
+  if (status === "loading") return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
