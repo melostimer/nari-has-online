@@ -38,8 +38,8 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans bg-gray-50 antialiased">
-        <ComingSoonOverlay />
         <SessionProvider>
+          <ComingSoonOverlay />
           <CartProvider>
             <Navbar />
             <CartDrawer />
