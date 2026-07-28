@@ -2,10 +2,28 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
 export function ComingSoonOverlay() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const [tapCount, setTapCount] = useState(0);
+  const [bypassed, setBypassed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBypassed(localStorage.getItem("narihas-bypass") === "1");
+    }
+  }, []);
+
+  const handleSecretTap = () => {
+    const next = tapCount + 1;
+    setTapCount(next);
+    if (next >= 5) {
+      localStorage.setItem("narihas-bypass", "1");
+      setBypassed(true);
+    }
+  };
 
   // /admin veya /auth sayfalarında gösterme
   const isBypassed = pathname?.startsWith('/admin') || pathname?.startsWith('/auth');
@@ -13,7 +31,7 @@ export function ComingSoonOverlay() {
   // Giriş yapmış kullanıcılara gösterme
   const isLoggedIn = status === "authenticated" && !!session;
 
-  if (isBypassed || isLoggedIn) return null;
+  if (isBypassed || isLoggedIn || bypassed) return null;
 
   // Oturum yükleniyorsa bekle (flash önleme)
   if (status === "loading") return null;
@@ -76,6 +94,14 @@ export function ComingSoonOverlay() {
 
 
       </div>
+
+      {/* Gizli bypass butonu — sağ alt köşe, 5 kez tıkla */}
+      <button
+        onClick={handleSecretTap}
+        className="absolute bottom-0 right-0 w-16 h-16 opacity-0 cursor-default"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
       <style jsx>{`
         @keyframes fadeUp {
