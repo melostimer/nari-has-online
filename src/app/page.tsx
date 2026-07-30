@@ -136,9 +136,7 @@ export default async function HomePage() {
           <div className="flex items-center gap-3 px-4 py-3 text-gray-600">
             <Clock className="h-4 w-4 text-gray-400 shrink-0" />
             <span>
-              <strong className="text-gray-800">Pzt–Cum:</strong> 11:00–23:00
-              &nbsp;·&nbsp;
-              <strong className="text-gray-800">Cts–Paz:</strong> 10:00–24:00
+              <strong className="text-gray-800">Haftanın her günü:</strong> 11:00–24:00
             </span>
           </div>
           <div className="flex items-center gap-3 px-4 py-3 text-gray-600">

@@ -62,10 +62,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3 text-sm">
                 <Clock className="h-4 w-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div>Hafta İçi: 11:00 - 23:00</div>
-                  <div>Hafta Sonu: 10:00 - 24:00</div>
-                </div>
+                <div>Haftanın her günü: 11:00 - 24:00</div>
               </li>
             </ul>
           </div>
