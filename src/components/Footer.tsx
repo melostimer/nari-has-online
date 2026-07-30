@@ -52,7 +52,9 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm">
                 <MapPin className="h-4 w-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                <span>Bağcılar Mah. Lezzet Sk. No:12, İstanbul</span>
+                <a href="https://maps.google.com/?q=Bağlar+Mahallesi+Atatürk+Bulvarı+No:40+Niksar/Tokat" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 transition-colors">
+                  Bağlar Mahallesi Atatürk Bulvarı No:40 Niksar/Tokat
+                </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Phone className="h-4 w-4 text-brand-500 flex-shrink-0" />

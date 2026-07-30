@@ -143,7 +143,9 @@ export default async function HomePage() {
           </div>
           <div className="flex items-center gap-3 px-4 py-3 text-gray-600">
             <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
-            <span>Bağcılar Mah. Lezzet Sk. No:12, İstanbul</span>
+            <a href="https://maps.google.com/?q=Bağlar+Mahallesi+Atatürk+Bulvarı+No:40+Niksar/Tokat" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 transition-colors">
+              Bağlar Mahallesi Atatürk Bulvarı No:40 Niksar/Tokat
+            </a>
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
             <Phone className="h-4 w-4 text-gray-400 shrink-0" />
