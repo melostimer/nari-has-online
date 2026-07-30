@@ -26,7 +26,6 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
               <tr>
                 <td style="background:#1a0a00;padding:32px 40px;text-align:center;">
                   <h1 style="color:#c59e67;font-size:28px;margin:0;letter-spacing:0.1em;">Nar-ı Has</h1>
-                  <p style="color:rgba(197,158,103,0.6);font-size:12px;margin:6px 0 0;letter-spacing:0.15em;">GELENEKSEL ANADOLU MUTFAĞI</p>
                 </td>
               </tr>
               <tr>
