@@ -3,181 +3,124 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { ProductCard } from "@/components/ProductCard";
 import { formatPrice } from "@/lib/utils";
-import { ArrowRight, Clock, MapPin, Phone, Star, Shield, Truck } from "lucide-react";
+import { ArrowRight, Clock, MapPin, Phone, Truck, Shield, Star } from "lucide-react";
+import { HomeProductList } from "@/components/HomeProductList";
+import { StickyCartBar } from "@/components/StickyCartBar";
 
 export const metadata: Metadata = {
   title: "Ana Sayfa | Nar-ı Has",
   description: "Nar-ı Has - Geleneksel Anadolu mutfağının en seçkin tatlarını online sipariş edin.",
 };
 
-async function getFeaturedProducts() {
-  return prisma.product.findMany({
-    where: { isFeatured: true, isAvailable: true },
-    include: { category: { select: { name: true, emoji: true } } },
-    take: 6,
-  });
-}
-
 export default async function HomePage() {
-  const featured = await getFeaturedProducts();
-
-  const features = [
-    { icon: Truck, title: "Hızlı Teslimat", desc: "Ortalama 45 dakikada kapınızda" },
-    { icon: Shield, title: "Güvenli Ödeme", desc: "Kapıda nakit veya kart ile güvenle ödeyin" },
-    { icon: Star, title: "Seçkin Lezzetler", desc: "Geleneksel tariflerle hazırlanan özgün tatlar" },
-  ];
+  const [featured, categories, allProducts] = await Promise.all([
+    prisma.product.findMany({
+      where: { isFeatured: true, isAvailable: true },
+      include: { category: { select: { name: true, emoji: true } } },
+      take: 8,
+    }),
+    prisma.category.findMany({ orderBy: { order: "asc" } }),
+    prisma.product.findMany({
+      where: { isAvailable: true },
+      include: { category: { select: { id: true, name: true, emoji: true } } },
+      orderBy: [{ category: { order: "asc" } }, { order: "asc" }],
+    }),
+  ]);
 
   return (
-    <div className="bg-white">
-      {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-hero-gradient">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 25px 25px, white 2px, transparent 0)", backgroundSize: "50px 50px" }} />
+    <div className="bg-gray-50 min-h-screen pb-28 md:pb-0">
 
-        {/* Decorative circles */}
-        <div className="absolute top-20 right-20 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pomegranate-600/10 rounded-full blur-3xl" />
-
-        <div className="section-container relative z-10 py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-slide-up">
-              <div className="inline-flex items-center gap-2 bg-brand-500/20 text-brand-300 text-sm font-medium px-4 py-2 rounded-full mb-6 border border-brand-500/30">
-                <span className="w-2 h-2 bg-brand-400 rounded-full animate-pulse" />
-                Online Sipariş Açık
-              </div>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-                Geleneksel
-                <span className="block text-gradient">Lezzetler</span>
-                Kapınızda
-              </h1>
-              <p className="text-lg text-gray-300 mb-8 leading-relaxed max-w-lg">
-                Nar-ı Has'ta yüzlerce yıllık Anadolu mutfağı geleneği, modern bir dokunuşla sofranızda. En taze malzemeler, en özgün tarifler.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/menu" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-gradient text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-glow hover:shadow-none text-base">
-                  Menüyü İncele
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
-                <Link href="/menu" className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 transition-all text-base">
-                  Hemen Sipariş Ver
-                </Link>
-              </div>
+      {/* ── Compact Hero ─────────────────────────────── */}
+      <section className="bg-white border-b border-gray-100 px-4 py-5">
+        <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex items-center gap-3 flex-1">
+            <Image src="/icon.png" alt="Nar-ı Has" width={44} height={44} className="object-contain" />
+            <div>
+              <h1 className="text-lg font-bold text-gray-900 leading-tight">Nar-ı Has</h1>
+              <p className="text-xs text-gray-500">Geleneksel Anadolu Mutfağı • Online Sipariş</p>
             </div>
-
-            {/* Hero visual */}
-            <div className="relative hidden lg:block">
-              <div className="relative w-full aspect-square max-w-md mx-auto">
-                <div className="absolute inset-0 bg-brand-500/20 rounded-3xl blur-2xl" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 text-center flex flex-col items-center">
-                  <div className="mb-4 bg-white/80 p-5 rounded-3xl flex flex-col items-center gap-3">
-                    <Image src="/icon.png" alt="Icon" width={64} height={64} className="object-contain" />
-                    <Image src="/logo.png" alt="Nar-ı Has" width={160} height={50} className="object-contain" />
-                  </div>
-                  <p className="text-brand-300 text-sm">Geleneksel Anadolu Mutfağı</p>
-                  <div className="grid grid-cols-3 gap-4 mt-8">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-white">14+</div>
-                      <div className="text-xs text-gray-400">Ürün</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-white">45dk</div>
-                      <div className="text-xs text-gray-400">Teslimat</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-white">5/5</div>
-                      <div className="text-xs text-gray-400">Puan</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="flex items-center gap-2 text-xs shrink-0">
+            <span className="flex items-center gap-1 text-green-600 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" />
+              Sipariş Açık
+            </span>
+            <Link
+              href="/menu"
+              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl transition-colors"
+            >
+              Menüye Git <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-12 bg-gray-50 border-y border-gray-100">
-        <div className="section-container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((f) => (
-              <div key={f.title} className="flex items-center gap-4 p-5 bg-white rounded-2xl shadow-card">
-                <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <f.icon className="h-6 w-6 text-brand-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{f.title}</h3>
-                  <p className="text-sm text-gray-500">{f.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* ── Slim Features Strip ───────────────────────── */}
+      <section className="bg-white border-b border-gray-100 px-4 py-2.5">
+        <div className="max-w-2xl mx-auto flex items-center justify-center gap-6 flex-wrap text-xs text-gray-500">
+          <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5 text-brand-500" />Ortalama 45 dk teslimat</span>
+          <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-brand-500" />Kapıda ödeme</span>
+          <span className="flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-brand-500" />Taze & özgün tarifler</span>
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
-        <section className="py-20">
-          <div className="section-container">
-            <div className="text-center mb-12">
-              <span className="text-brand-500 font-semibold text-sm uppercase tracking-widest">En Popüler</span>
-              <h2 className="font-display text-4xl font-bold text-gray-900 mt-2">Öne Çıkan Lezzetler</h2>
-              <p className="text-gray-500 mt-3 max-w-lg mx-auto">Müşterilerimizin en çok tercih ettiği özgün tatlarımız</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featured.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-            <div className="text-center mt-10">
-              <Link href="/menu" className="inline-flex items-center gap-2 px-8 py-3 bg-brand-gradient text-white font-semibold rounded-xl hover:opacity-90 transition-all">
-                Tüm Menüyü Gör
-                <ArrowRight className="h-4 w-4" />
+      {/* ── Featured Products List ────────────────────── */}
+      <div className="max-w-2xl mx-auto px-4 mt-5">
+        {featured.length > 0 && (
+          <section className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-base font-bold text-gray-900">⭐ Öne Çıkanlar</h2>
+              <Link href="/menu" className="text-xs text-brand-600 font-semibold hover:underline flex items-center gap-0.5">
+                Tümü <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-          </div>
-        </section>
-      )}
+            <HomeProductList products={featured} />
+          </section>
+        )}
 
-      {/* Info Section */}
-      <section className="py-20 bg-dark-950 text-white">
-        <div className="section-container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-brand-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                <Clock className="h-6 w-6 text-brand-400" />
+        {/* ── All Products by Category ───────────────── */}
+        {categories.map((cat) => {
+          const catProducts = allProducts.filter((p) => (p.category as any).id === cat.id && !featured.find(f => f.id === p.id));
+          if (catProducts.length === 0) return null;
+          return (
+            <section key={cat.id} className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">{cat.emoji}</span>
+                <h2 className="text-base font-bold text-gray-900">{cat.name}</h2>
+                <span className="text-xs text-gray-400">{catProducts.length} ürün</span>
               </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Çalışma Saatleri</h3>
-                <div className="space-y-1 text-gray-400 text-sm">
-                  <p>Pazartesi - Cuma: 11:00 - 23:00</p>
-                  <p>Cumartesi - Pazar: 10:00 - 24:00</p>
-                </div>
-              </div>
+              <HomeProductList products={catProducts} />
+            </section>
+          );
+        })}
+      </div>
+
+      {/* ── Info Strip ───────────────────────────────── */}
+      <section className="max-w-2xl mx-auto px-4 mt-2 mb-6">
+        <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+          <div className="flex items-center gap-3 px-4 py-3 text-sm">
+            <Clock className="h-4 w-4 text-gray-400 shrink-0" />
+            <div>
+              <span className="text-gray-900 font-medium">Pzt–Cum:</span>
+              <span className="text-gray-500 ml-1">11:00–23:00</span>
+              <span className="mx-2 text-gray-300">·</span>
+              <span className="text-gray-900 font-medium">Cts–Paz:</span>
+              <span className="text-gray-500 ml-1">10:00–24:00</span>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-brand-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                <MapPin className="h-6 w-6 text-brand-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Adresimiz</h3>
-                <p className="text-gray-400 text-sm">Bağcılar Mah. Lezzet Sk. No:12</p>
-                <p className="text-gray-400 text-sm">İstanbul, Türkiye</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-brand-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                <Phone className="h-6 w-6 text-brand-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Bize Ulaşın</h3>
-                <a href="tel:+905550000000" className="text-brand-400 hover:text-brand-300 transition-colors">+90 555 000 00 00</a>
-              </div>
-            </div>
+          </div>
+          <div className="flex items-center gap-3 px-4 py-3 text-sm">
+            <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
+            <span className="text-gray-600">Bağcılar Mah. Lezzet Sk. No:12, İstanbul</span>
+          </div>
+          <div className="flex items-center gap-3 px-4 py-3 text-sm">
+            <Phone className="h-4 w-4 text-gray-400 shrink-0" />
+            <a href="tel:+905550000000" className="text-brand-600 font-medium hover:underline">+90 555 000 00 00</a>
           </div>
         </div>
       </section>
+
+      <StickyCartBar />
     </div>
   );
 }
