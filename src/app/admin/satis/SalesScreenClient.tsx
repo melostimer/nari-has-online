@@ -106,7 +106,7 @@ export function SalesScreenClient({ initialOrders }: { initialOrders: any[] }) {
       if (res.ok) {
         const data = await res.json();
         
-        const currentIds = new Set(data.map((o: any) => o.id));
+        const currentIds = new Set<string>(data.map((o: any) => String(o.id)));
         const newIds = data
           .filter((o: any) => !previousOrderIdsRef.current.has(o.id) && o.status === "PENDING")
           .map((o: any) => o.id);
