@@ -93,12 +93,10 @@ export function SliderClient({ initialImages }: { initialImages: SliderImage[] }
             onChange={handleUpload}
             disabled={uploading}
           />
-          <label htmlFor="slider-upload">
-            <Button as="span" disabled={uploading}>
-              {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
-              Yeni Görsel Ekle
-            </Button>
-          </label>
+          <Button type="button" disabled={uploading} onClick={() => document.getElementById('slider-upload')?.click()}>
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
+            Yeni Görsel Ekle
+          </Button>
         </div>
       </div>
 
