@@ -375,7 +375,7 @@ export function SalesScreenClient({ initialOrders }: { initialOrders: any[] }) {
                           <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center font-semibold text-gray-600">
                             {item.quantity}x
                           </div>
-                          <div className="font-medium text-gray-900">{item.product.name}</div>
+                          <div className="font-medium text-gray-900">{item.product?.name || "Silinmiş Ürün"}</div>
                         </div>
                         <div className="font-semibold text-gray-900">
                           {formatPrice(Number(item.unitPrice) * item.quantity)}

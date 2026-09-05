@@ -193,14 +193,14 @@ export function OrderDetailClient({ initialOrder }: { initialOrder: Order }) {
             {order.orderItems.map(item => (
               <div key={item.id} className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gray-50 overflow-hidden shrink-0 border border-gray-100">
-                  {item.product.imageUrl ? (
-                    <Image src={item.product.imageUrl} alt={item.product.name} width={48} height={48} className="w-full h-full object-cover" />
+                  {item.product?.imageUrl ? (
+                    <Image src={item.product.imageUrl} alt={item.product?.name || "Ürün"} width={48} height={48} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xl">🍽️</div>
+                    <ChefHat className="h-6 w-6 text-brand-300" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 truncate">{item.product.name}</p>
+                  <p className="font-medium text-gray-900 truncate">{item.product?.name || "Silinmiş Ürün"}</p>
                   <p className="text-sm text-gray-400">{item.quantity} adet × {formatPrice(Number(item.unitPrice))}</p>
                 </div>
                 <span className="font-semibold text-gray-900 shrink-0">

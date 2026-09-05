@@ -86,7 +86,7 @@ export default async function ProfilePage() {
                         <OrderStatusBadge status={order.status} />
                       </div>
                       <p className="text-sm text-gray-500 mb-2">
-                        {order.orderItems.map(i => i.product.name).join(", ")}
+                        {order.orderItems.map(i => i.product?.name || "Silinmiş Ürün").join(", ")}
                       </p>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-gray-400">{formatDate(order.createdAt)}</span>
