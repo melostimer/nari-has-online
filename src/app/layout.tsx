@@ -7,6 +7,10 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ComingSoonOverlay } from "@/components/ComingSoonOverlay";
+import { StaffGuard } from "@/components/StaffGuard";
+import { ActiveOrderBar } from "@/components/ActiveOrderBar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,21 +34,25 @@ export const metadata: Metadata = {
   keywords: ["Nar-ı Has", "yemek siparişi", "Anadolu mutfağı", "online sipariş", "kebap", "pide"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  const isStaff = (session?.user as any)?.role === "STAFF";
   return (
     <html lang="tr" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans bg-gray-50 antialiased">
         <SessionProvider>
           <ComingSoonOverlay />
           <CartProvider>
-            <Navbar />
-            <CartDrawer />
+            <StaffGuard />
+            {!isStaff && <Navbar />}
+            {!isStaff && <ActiveOrderBar />}
+            {!isStaff && <CartDrawer />}
             <main className="min-h-screen">{children}</main>
-            <Footer />
+            {!isStaff && <Footer />}
           </CartProvider>
         </SessionProvider>
       </body>

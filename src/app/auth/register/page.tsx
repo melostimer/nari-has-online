@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { ChefHat, Mail, Lock, User, Phone, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import { Mail, Lock, User, Phone, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -35,21 +36,26 @@ export default function RegisterPage() {
   const update = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 py-12 relative overflow-hidden">
+      {/* Decorative background blob */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-brand-gradient flex items-center justify-center mx-auto mb-4 shadow-glow">
-            <ChefHat className="h-8 w-8 text-white" />
-          </div>
+          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-6">
+            <Image src="/icon.png" alt="Icon" width={32} height={32} className="object-contain" />
+            <Image src="/logo.png" alt="Nar-ı Has" width={130} height={36} className="object-contain" />
+          </Link>
           <h1 className="font-display text-3xl font-bold text-gray-900">Hesap Olustur</h1>
           <p className="text-gray-500 mt-1">Hizli ve kolay siparis icin kayit olun</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-card p-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           {error && <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input id="name" label="Ad Soyad" value={form.name} onChange={update("name")} placeholder="Adinizi girin" required icon={<User className="h-4 w-4" />} />
             <Input id="email" label="E-posta" type="email" value={form.email} onChange={update("email")} placeholder="ornek@email.com" required icon={<Mail className="h-4 w-4" />} />
-            <Input id="phone" label="Telefon" type="tel" value={form.phone} onChange={update("phone")} placeholder="0555 000 00 00" required icon={<Phone className="h-4 w-4" />} />
+            <Input id="phone" label="Telefon" type="tel" value={form.phone} onChange={update("phone")} placeholder="0501 612 60 60" required icon={<Phone className="h-4 w-4" />} />
             <div className="relative">
               <Input id="password" label="Sifre" type={showPass ? "text" : "password"} value={form.password} onChange={update("password")} placeholder="En az 8 karakter" required icon={<Lock className="h-4 w-4" />} />
               <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-9 text-gray-400">{showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>

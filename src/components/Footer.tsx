@@ -5,7 +5,7 @@ import { MapPin, Phone, Clock, Instagram, Facebook } from "lucide-react";
 export function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100 text-gray-500">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
           {/* Brand */}
@@ -18,7 +18,7 @@ export function Footer() {
               Hamburger, pizza, tatlı ve kahve — hızlı teslimat, kapıda ödeme.
             </p>
             <div className="flex gap-3 mt-4">
-              <a href="#" aria-label="Instagram" className="p-2 rounded-lg text-gray-400 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+              <a href="https://www.instagram.com/cafenarihas/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="p-2 rounded-lg text-gray-400 hover:text-brand-600 hover:bg-brand-50 transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
               <a href="#" aria-label="Facebook" className="p-2 rounded-lg text-gray-400 hover:text-brand-600 hover:bg-brand-50 transition-colors">
@@ -56,13 +56,18 @@ export function Footer() {
                   Bağlar Mahallesi Atatürk Bulvarı No:40 Niksar/Tokat
                 </a>
               </li>
-              <li className="flex items-center gap-3 text-sm">
-                <Phone className="h-4 w-4 text-brand-500 flex-shrink-0" />
-                <a href="tel:+905550000000" className="hover:text-brand-600 transition-colors">+90 555 000 00 00</a>
+              <li className="flex gap-3">
+                <Phone className="w-5 h-5 text-brand-500 flex-shrink-0" />
+                <a href="tel:+905016126060" className="hover:text-brand-600 transition-colors">+90 501 612 60 60</a>
               </li>
-              <li className="flex items-start gap-3 text-sm">
-                <Clock className="h-4 w-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                <div>Haftanın her günü: 11:00 - 24:00</div>
+              <li className="flex gap-3">
+                <Clock className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                <div className="flex flex-col gap-1">
+                  <div>Haftanın her günü: 11:00 - 24:00</div>
+                  <div className="text-brand-600 font-medium bg-brand-50 inline-block px-2 py-0.5 rounded text-sm w-fit">
+                    Paket Servis: 11:00 - 23:30
+                  </div>
+                </div>
               </li>
             </ul>
           </div>

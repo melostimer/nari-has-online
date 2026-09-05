@@ -5,9 +5,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { z } from "zod";
 
-async function checkAdmin() {
+async function checkAdminOrStaff() {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "ADMIN") return null;
+  const role = (session?.user as any)?.role;
+  if (!session?.user || (role !== "ADMIN" && role !== "STAFF")) return null;
   return session;
 }
 
@@ -20,7 +21,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!(await checkAdmin())) {
+  if (!(await checkAdminOrStaff())) {
     return NextResponse.json({ error: "Yetkisiz" }, { status: 403 });
   }
   try {

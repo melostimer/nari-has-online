@@ -2,6 +2,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Lock, ArrowLeft, Eye, EyeOff, CheckCircle } from "lucide-react";
 
 function ResetPasswordForm() {
@@ -123,9 +124,19 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl shadow-card p-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative overflow-hidden py-12">
+      {/* Decorative background blob */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center justify-center gap-2">
+            <Image src="/icon.png" alt="Icon" width={32} height={32} className="object-contain" />
+            <Image src="/logo.png" alt="Nar-ı Has" width={130} height={36} className="object-contain" />
+          </Link>
+        </div>
+        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
           <Suspense fallback={<div className="text-center text-gray-400 py-8">Yükleniyor...</div>}>
             <ResetPasswordForm />
           </Suspense>

@@ -8,11 +8,10 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
   const [users, setUsers] = useState(initialUsers);
   const [search, setSearch] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"ALL" | "ADMIN" | "CUSTOMER">("ALL");
+  const [filter, setFilter] = useState<"ALL" | "ADMIN" | "CUSTOMER" | "STAFF">("ALL");
 
-  const toggleRole = async (id: string, currentRole: string) => {
-    const newRole = currentRole === "ADMIN" ? "CUSTOMER" : "ADMIN";
-    if (!confirm(`Bu kullanıcıyı ${newRole === "ADMIN" ? "ADMIN" : "müşteri"} yapmak istediğinizden emin misiniz?`)) return;
+  const updateRole = async (id: string, newRole: string) => {
+    if (!confirm(`Bu kullanıcının rolünü ${newRole} yapmak istediğinizden emin misiniz?`)) return;
     setUpdatingId(id);
     try {
       const res = await fetch(`/api/admin/customers/${id}/role`, {
@@ -52,10 +51,13 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
         </div>
         <div className="flex gap-2 text-sm">
           <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium flex items-center gap-1">
-            <Shield className="h-3.5 w-3.5" /> {adminCount} Admin
+            <Shield className="h-3.5 w-3.5" /> {users.filter(u => u.role === "ADMIN").length} Admin
+          </span>
+          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium flex items-center gap-1">
+            <Users className="h-3.5 w-3.5" /> {users.filter(u => u.role === "STAFF").length} Personel
           </span>
           <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" /> {customerCount} Müşteri
+            <Users className="h-3.5 w-3.5" /> {users.filter(u => u.role === "CUSTOMER").length} Müşteri
           </span>
         </div>
       </div>
@@ -73,7 +75,7 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
           />
         </div>
         <div className="flex gap-2">
-          {(["ALL", "ADMIN", "CUSTOMER"] as const).map((f) => (
+          {(["ALL", "ADMIN", "STAFF", "CUSTOMER"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
@@ -81,7 +83,7 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
                 filter === f ? "bg-brand-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
-              {f === "ALL" ? "Tümü" : f === "ADMIN" ? "Adminler" : "Müşteriler"}
+              {f === "ALL" ? "Tümü" : f === "ADMIN" ? "Adminler" : f === "STAFF" ? "Personel" : "Müşteriler"}
             </button>
           ))}
         </div>
@@ -132,12 +134,12 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
                     </td>
                     <td className="py-4 px-6">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                        isAdmin
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-gray-100 text-gray-600"
+                        u.role === "ADMIN" ? "bg-purple-100 text-purple-700" :
+                        u.role === "STAFF" ? "bg-blue-100 text-blue-700" :
+                        "bg-gray-100 text-gray-600"
                       }`}>
-                        {isAdmin ? <Shield className="h-3 w-3" /> : <Users className="h-3 w-3" />}
-                        {isAdmin ? "Admin" : "Müşteri"}
+                        {u.role === "ADMIN" ? <Shield className="h-3 w-3" /> : <Users className="h-3 w-3" />}
+                        {u.role === "ADMIN" ? "Admin" : u.role === "STAFF" ? "Personel" : "Müşteri"}
                       </span>
                     </td>
                     <td className="py-4 px-6">
@@ -151,21 +153,16 @@ export function CustomersClient({ initialUsers }: { initialUsers: any[] }) {
                       <span className="text-sm text-gray-500">{formatDate(u.createdAt)}</span>
                     </td>
                     <td className="py-4 px-6">
-                      <button
-                        onClick={() => toggleRole(u.id, u.role)}
+                      <select
+                        value={u.role}
+                        onChange={(e) => updateRole(u.id, e.target.value)}
                         disabled={updatingId === u.id}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all disabled:opacity-50 ${
-                          isAdmin
-                            ? "border-red-200 text-red-600 hover:bg-red-50"
-                            : "border-purple-200 text-purple-600 hover:bg-purple-50"
-                        }`}
-                        title={isAdmin ? "Müşteriye Düşür" : "Admin Yap"}
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white text-gray-700 focus:outline-none focus:border-brand-500 disabled:opacity-50"
                       >
-                        {updatingId === u.id ? "..." : isAdmin
-                          ? <><ShieldOff className="h-3.5 w-3.5" /> Müşteri Yap</>
-                          : <><Shield className="h-3.5 w-3.5" /> Admin Yap</>
-                        }
-                      </button>
+                        <option value="CUSTOMER">Müşteri</option>
+                        <option value="STAFF">Personel</option>
+                        <option value="ADMIN">Admin</option>
+                      </select>
                     </td>
                   </tr>
                 );

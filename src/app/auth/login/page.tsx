@@ -5,7 +5,8 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ChefHat, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -31,16 +32,21 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative background blob */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-brand-gradient flex items-center justify-center mx-auto mb-4 shadow-glow">
-            <ChefHat className="h-8 w-8 text-white" />
-          </div>
+          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-6">
+            <Image src="/icon.png" alt="Icon" width={32} height={32} className="object-contain" />
+            <Image src="/logo.png" alt="Nar-ı Has" width={130} height={36} className="object-contain" />
+          </Link>
           <h1 className="font-display text-3xl font-bold text-gray-900">Hoşgeldiniz</h1>
           <p className="text-gray-500 mt-1">Hesabınıza giriş yapın</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-card p-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           {error && (
             <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">{error}</div>
           )}

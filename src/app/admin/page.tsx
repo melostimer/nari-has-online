@@ -6,9 +6,18 @@ import { TrendingUp, ShoppingBag, Users, Clock } from "lucide-react";
 import { DashboardChart } from "./DashboardChart";
 import { RecentOrdersList } from "./RecentOrdersList";
 
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
 export const metadata: Metadata = { title: "Dashboard | Admin" };
 
 export default async function AdminDashboard() {
+  const session = await getServerSession(authOptions);
+  if ((session?.user as any)?.role === "STAFF") {
+    redirect("/admin/satis");
+  }
+
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 

@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   const { role } = await req.json();
-  if (!["ADMIN", "CUSTOMER"].includes(role)) {
+  if (!["ADMIN", "STAFF", "CUSTOMER"].includes(role)) {
     return NextResponse.json({ error: "Geçersiz rol" }, { status: 400 });
   }
 

@@ -111,9 +111,20 @@ export function AdminProductsClient({
 
   const handleDelete = async (id: string) => {
     if (!confirm("Bu ürünü silmek istediğinizden emin misiniz?")) return;
-    const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
-    if (res.ok) setProducts(products.filter((p) => p.id !== id));
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setProducts(products.filter((p) => p.id !== id));
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Silme başarısız: ${data?.error || res.statusText}`);
+      }
+    } catch (err) {
+      alert("Bağlantı hatası: Sayfa yenilenip tekrar denensin.");
+      console.error("Delete error:", err);
+    }
   };
+
 
   const toggleAvailable = async (p: Product) => {
     const res = await fetch(`/api/admin/products/${p.id}`, {

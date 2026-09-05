@@ -35,7 +35,7 @@ export function MenuClient({ categories, products }: { categories: Category[]; p
 
       {/* Compact top bar */}
       <div className="bg-white border-b border-gray-100 sticky top-16 z-30">
-        <div className="max-w-5xl mx-auto px-4 pt-3 pb-0">
+        <div className="max-w-6xl mx-auto px-4 pt-3 pb-0">
 
           {/* Search */}
           <div className="relative mb-3">
@@ -80,7 +80,7 @@ export function MenuClient({ categories, products }: { categories: Category[]; p
       </div>
 
       {/* Product list */}
-      <div className="max-w-5xl mx-auto px-4 pt-5">
+      <div className="max-w-6xl mx-auto px-4 pt-5">
         {filtered.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-5xl mb-4">🤔</p>
@@ -102,7 +102,7 @@ export function MenuClient({ categories, products }: { categories: Category[]; p
                     <h2 className="text-lg font-bold text-gray-900">{cat.name}</h2>
                     <span className="text-xs text-gray-400 font-medium">{catProducts.length} ürün</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                     {catProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}

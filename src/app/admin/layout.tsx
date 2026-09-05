@@ -3,11 +3,14 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChefHat, LayoutDashboard, Package, ShoppingBag, Users, LogOut, ListOrdered, Monitor } from "lucide-react";
+import { ChefHat, LayoutDashboard, Package, ShoppingBag, Users, LogOut, ListOrdered, Monitor, Image as ImageIcon, Settings } from "lucide-react";
+import { AdminLogoutButton } from "./AdminLogoutButton";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "ADMIN") {
+  const userRole = (session?.user as any)?.role;
+
+  if (!session || !["ADMIN", "STAFF"].includes(userRole)) {
     redirect("/auth/login");
   }
 
@@ -18,7 +21,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/categories", label: "Kategoriler", icon: ListOrdered },
     { href: "/admin/products", label: "Ürünler", icon: Package },
     { href: "/admin/customers", label: "Müşteriler", icon: Users },
+    { href: "/admin/slider", label: "Slider Görselleri", icon: ImageIcon },
+    { href: "/admin/settings", label: "Ayarlar", icon: Settings },
   ];
+
+  const filteredNavItems = navItems.filter((item) => {
+    if (userRole === "STAFF") {
+      return item.href === "/admin/satis";
+    }
+    return true; // ADMIN sees everything
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -32,7 +44,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <span className="text-xs text-gray-400 font-medium tracking-wider uppercase">Admin Panel</span>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <Link key={item.href} href={item.href}
               className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-all text-sm font-medium group">
               <item.icon className="h-5 w-5 group-hover:text-brand-500 transition-colors" />
@@ -41,9 +53,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ))}
         </nav>
         <div className="p-4 border-t border-gray-100">
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all text-sm font-medium">
-            <LogOut className="h-4 w-4" /> Siteye Dön
-          </Link>
+          {userRole === "STAFF" ? (
+            <AdminLogoutButton />
+          ) : (
+            <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all text-sm font-medium">
+              <LogOut className="h-4 w-4" /> Siteye Dön
+            </Link>
+          )}
         </div>
       </aside>
       <main className="flex-1 ml-64 p-8 bg-gray-50 min-h-screen">{children}</main>

@@ -23,6 +23,17 @@ export async function uploadImage(source: string, folder = "narihas/products"): 
   return result.secure_url;
 }
 
+export async function uploadSliderImage(source: string): Promise<string> {
+  const result = await cloudinary.uploader.upload(source, {
+    folder: "narihas/slider",
+    transformation: [
+      { width: 1920, height: 1080, crop: "fill", gravity: "auto" },
+      { quality: "auto", fetch_format: "auto" },
+    ],
+  });
+  return result.secure_url;
+}
+
 /**
  * Cloudinary'den görsel siler
  */

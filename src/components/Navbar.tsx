@@ -3,16 +3,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { ShoppingCart, User, Menu, X, ChefHat, LogOut, Package } from "lucide-react";
+import { ShoppingCart, User, Menu, X, ChefHat, LogOut, Package, Instagram } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { totalItems, toggleCart } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isAdmin = (session?.user as any)?.role === "ADMIN";
+  const userRole = (session?.user as any)?.role;
+  const showAdminLink = userRole === "ADMIN" || userRole === "STAFF";
+
+  const pathname = usePathname();
+  const router = useRouter();
 
   const navLinks = [
     { href: "/", label: "Ana Sayfa" },
@@ -21,7 +26,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3 group">
             <Image src="/icon.png" alt="Logo Icon" width={32} height={32} className="object-contain group-hover:scale-105 transition-transform" />
@@ -33,11 +38,14 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {isAdmin && (
+            {showAdminLink && (
               <Link href="/admin" className="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Admin Panel</Link>
             )}
           </div>
           <div className="flex items-center gap-2">
+            <a href="https://www.instagram.com/cafenarihas/" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-all" aria-label="Instagram">
+              <Instagram className="h-5 w-5" />
+            </a>
             <button id="cart-toggle-btn" onClick={toggleCart} className="relative p-2.5 rounded-xl text-gray-600 hover:text-brand-600 hover:bg-brand-50 transition-all" aria-label="Sepeti aç">
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
@@ -72,7 +80,7 @@ export function Navbar() {
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all" onClick={() => setMobileOpen(false)}>{link.label}</Link>
             ))}
-            {isAdmin && (
+            {showAdminLink && (
               <Link href="/admin" className="block px-4 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-50 rounded-lg" onClick={() => setMobileOpen(false)}>Admin Panel</Link>
             )}
             <div className="pt-2 border-t border-gray-100 mt-2">

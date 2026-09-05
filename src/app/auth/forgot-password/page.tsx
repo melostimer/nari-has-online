@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
@@ -33,9 +34,19 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl shadow-card p-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative overflow-hidden py-12">
+      {/* Decorative background blob */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-50 rounded-full blur-3xl opacity-60 translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center justify-center gap-2">
+            <Image src="/icon.png" alt="Icon" width={32} height={32} className="object-contain" />
+            <Image src="/logo.png" alt="Nar-ı Has" width={130} height={36} className="object-contain" />
+          </Link>
+        </div>
+        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
           {sent ? (
             <div className="text-center py-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

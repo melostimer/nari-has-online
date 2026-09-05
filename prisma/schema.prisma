@@ -34,6 +34,7 @@ model User {
 enum Role {
   CUSTOMER
   ADMIN
+  STAFF
 }
 
 // ─── Adresler ────────────────────────────────────────────────────────────────
@@ -117,14 +118,34 @@ enum PaymentMethod {
 
 // ─── Sipariş Kalemleri ───────────────────────────────────────────────────────
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String  @map("order_id")
-  productId String  @map("product_id")
+  id        String   @id @default(cuid())
+  orderId   String   @map("order_id")
+  productId String?  @map("product_id") // Nullable — ürün silinse bile sipariş geçmişi bozulmaz
   quantity  Int
-  unitPrice Decimal @db.Decimal(10, 2) @map("unit_price") // Snapshot fiyat
+  unitPrice Decimal  @db.Decimal(10, 2) @map("unit_price") // Snapshot fiyat
 
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
+}
+
+// ─── Slider Görselleri ───────────────────────────────────────────────────────
+model HeroSliderImage {
+  id        String   @id @default(cuid())
+  imageUrl  String   @map("image_url")
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("hero_slider_images")
+}
+
+// ─── Ayarlar ────────────────────────────────────────────────────────────────
+model StoreSettings {
+  id                String  @id @default("global")
+  orderStartTime    String  @default("11:00")
+  orderEndTime      String  @default("23:30")
+  isOrderingEnabled Boolean @default(true)
+
+  @@map("store_settings")
 }

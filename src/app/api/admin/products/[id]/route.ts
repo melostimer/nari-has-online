@@ -57,7 +57,7 @@ export async function DELETE(
     await prisma.product.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
   } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Silme hatası" }, { status: 500 });
+    console.error("Delete product error:", e);
+    return NextResponse.json({ error: e instanceof Error ? e.message : "Silme hatası" }, { status: 500 });
   }
 }

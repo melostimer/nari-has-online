@@ -5,6 +5,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Clock, MapPin, Phone, Truck, Shield, Leaf } from "lucide-react";
+import { HeroSlider } from "@/components/HeroSlider";
 
 export const metadata: Metadata = {
   title: "Nar-ı Has — Kafe & Restoran",
@@ -15,53 +16,24 @@ export default async function HomePage() {
   const featured = await prisma.product.findMany({
     where: { isFeatured: true, isAvailable: true },
     include: { category: { select: { name: true, emoji: true } } },
-    take: 4,
+    take: 8,
     orderBy: { order: "asc" },
+  });
+
+  const sliderImages = await prisma.heroSliderImage.findMany({
+    orderBy: { order: "asc" },
+    select: { imageUrl: true },
   });
 
   return (
     <div className="bg-white min-h-screen">
 
       {/* ══ HERO ════════════════════════════════════════════ */}
-      <section className="bg-white border-b border-gray-100 px-5 py-12 text-center">
-        <div className="max-w-lg mx-auto">
-
-          {/* Badge */}
-          <span className="inline-flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Sipariş Açık
-          </span>
-
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Image src="/icon.png" alt="Nar-ı Has" width={48} height={48} className="object-contain" />
-            <Image src="/logo.png" alt="Nar-ı Has" width={150} height={42} className="object-contain" />
-          </div>
-
-          {/* Slogan */}
-          <p className="text-gray-500 text-sm mb-8">Lezzetli Anlar, Hızlı Teslimat</p>
-
-          {/* Primary CTA */}
-          <Link
-            href="/menu"
-            className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 active:scale-[0.98] text-white font-bold text-base px-8 py-4 rounded-2xl shadow-md transition-all w-full sm:w-auto justify-center"
-          >
-            Menüyü İncele &amp; Sipariş Ver
-            <ArrowRight className="h-5 w-5" />
-          </Link>
-
-          {/* Tagline */}
-          <p className="text-gray-400 text-xs mt-4 flex items-center gap-2 flex-wrap justify-center">
-            <span>🚚 Ortalama 45 dk teslimat</span>
-            <span>·</span>
-            <span>💳 Kapıda nakit veya kart</span>
-          </p>
-        </div>
-      </section>
+      <HeroSlider images={sliderImages} />
 
       {/* ══ WHY US ══════════════════════════════════════════ */}
       <section className="bg-gray-50 border-b border-gray-100 px-5 py-4">
-        <div className="max-w-xl mx-auto flex items-center justify-center gap-6 sm:gap-10 flex-wrap">
+        <div className="max-w-6xl mx-auto flex items-center justify-center gap-6 sm:gap-10 flex-wrap">
           {[
             { icon: Truck,  text: "Hızlı teslimat" },
             { icon: Leaf,   text: "Taze malzemeler" },
@@ -79,7 +51,7 @@ export default async function HomePage() {
 
       {/* ══ FEATURED TEASERS ════════════════════════════════ */}
       {featured.length > 0 && (
-        <section className="max-w-xl mx-auto px-4 pt-6 pb-2">
+        <section className="max-w-6xl mx-auto px-4 pt-6 pb-2">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-gray-900">En Çok Tercih Edilenler</h2>
             <Link href="/menu" className="text-xs text-brand-600 font-semibold hover:underline flex items-center gap-0.5">
@@ -87,7 +59,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {featured.map((p) => (
               <Link
                 key={p.id}
@@ -120,7 +92,7 @@ export default async function HomePage() {
       )}
 
       {/* ══ SECOND CTA ══════════════════════════════════════ */}
-      <div className="max-w-xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <Link
           href="/menu"
           className="flex items-center justify-center gap-2 w-full py-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.98] text-white font-bold text-base rounded-2xl shadow-md transition-all"
@@ -131,13 +103,16 @@ export default async function HomePage() {
       </div>
 
       {/* ══ INFO ════════════════════════════════════════════ */}
-      <section className="max-w-xl mx-auto px-4 pb-10">
+      <section className="max-w-6xl mx-auto px-4 pb-10">
         <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50 text-sm">
-          <div className="flex items-center gap-3 px-4 py-3 text-gray-600">
-            <Clock className="h-4 w-4 text-gray-400 shrink-0" />
-            <span>
-              <strong className="text-gray-800">Haftanın her günü:</strong> 11:00–24:00
-            </span>
+          <div className="flex items-center gap-3 px-4 py-3">
+            <Clock className="text-gray-400 w-5 h-5 flex-shrink-0" />
+            <div className="text-gray-600 flex flex-col gap-1">
+              <div><strong className="text-gray-800">Haftanın her günü:</strong> 11:00-24:00</div>
+              <div className="text-brand-600 font-medium bg-brand-50 inline-block px-2 py-0.5 rounded text-sm w-fit">
+                Paket Servis: 11:00-23:30
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-3 px-4 py-3 text-gray-600">
             <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
@@ -146,9 +121,9 @@ export default async function HomePage() {
             </a>
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
-            <Phone className="h-4 w-4 text-gray-400 shrink-0" />
-            <a href="tel:+905550000000" className="text-brand-600 font-semibold hover:underline">
-              +90 555 000 00 00
+            <Phone className="text-brand-500 w-5 h-5 flex-shrink-0" />
+            <a href="tel:+905016126060" className="text-brand-600 font-semibold hover:underline">
+              +90 501 612 60 60
             </a>
           </div>
         </div>
